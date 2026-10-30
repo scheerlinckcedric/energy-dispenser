@@ -1,23 +1,21 @@
-# Public example: electric boiler processor
-# This processor is intentionally simple. Real installations normally add
-# temperature hysteresis, minimum run time and safety checks.
+# Fixed 2000 W boiler processor. Adapt and validate this for your own hardware.
 
 - alias: Example - Electric boiler processor
   id: example_electric_boiler_processor
   mode: restart
 
-  trigger:
-    - platform: state
+  triggers:
+    - trigger: state
       entity_id:
         - sensor.budget_example_boiler
         - switch.example_boiler_relay
 
-  action:
+  actions:
     - choose:
         - conditions:
             - condition: numeric_state
               entity_id: sensor.budget_example_boiler
-              above: 999
+              above: 1999
           sequence:
             - action: switch.turn_on
               target:

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" role="img" aria-labelledby="title description">
+  <title id="title">Energy Dispenser architecture</title>
+  <desc id="description">A requester describes demand, Energy Dispenser grants an absolute watt budget, and a product-specific processor controls the physical device.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#536273"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="560" fill="#f7f9fc"/>
+  <text x="550" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#182230">From energy demand to device command</text>
+  <text x="550" y="92" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">The generic allocator never needs to know which physical product is connected.</text>
+  <rect x="45" y="155" width="285" height="220" rx="18" fill="#e8f1ff" stroke="#4c8bd9" stroke-width="2"/>
+  <text x="187" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#182230">Requester</text>
+  <text x="187" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">Describes demand</text>
+  <text x="187" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">minimum · preferred · maximum</text>
+  <text x="187" y="307" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">urgency · import permission</text>
+  <text x="187" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">measured actual power</text>
+  <path d="M330 265 L405 265" stroke="#536273" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="367" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#536273">request</text>
+  <rect x="410" y="155" width="280" height="220" rx="18" fill="#e7f7ed" stroke="#3f9b61" stroke-width="2"/>
+  <text x="550" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#182230">Energy Dispenser</text>
+  <text x="550" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">Reconstructs available power</text>
+  <text x="550" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">compares active requests</text>
+  <text x="550" y="307" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">enforces generic constraints</text>
+  <text x="550" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#2d8a50">grants an absolute W budget</text>
+  <path d="M690 265 L765 265" stroke="#536273" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="727" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#536273">budget</text>
+  <rect x="770" y="155" width="285" height="220" rx="18" fill="#fff2dc" stroke="#de9833" stroke-width="2"/>
+  <text x="912" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#182230">Processor</text>
+  <text x="912" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">Understands the product</text>
+  <text x="912" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">watts → relay / amps / mode</text>
+  <text x="912" y="307" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">rate limits and hysteresis</text>
+  <text x="912" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">device-specific safeguards</text>
+  <path d="M912 375 L912 435" stroke="#536273" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="770" y="445" width="285" height="70" rx="16" fill="#ffffff" stroke="#75869a" stroke-width="2"/>
+  <text x="912" y="488" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#182230">Physical device</text>
+</svg>

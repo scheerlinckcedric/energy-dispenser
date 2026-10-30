@@ -5,34 +5,68 @@ import struct
 ROOT = Path(__file__).parents[1]
 INTEGRATION = ROOT / "custom_components" / "energy_dispenser"
 EXAMPLES = ROOT / "examples"
-DIAGRAMS = EXAMPLES / "diagrams"
+DIAGRAMS = ROOT / "docs" / "diagrams"
 POWER_MODEL = ROOT / "docs" / "power-model.md"
 
 
 def test_public_examples_exist() -> None:
     expected = {
-        "electric_boiler.md",
-        "electric_boiler_requester.yaml",
-        "electric_boiler_processor.yaml",
-        "dishwasher.yaml",
-        "space_heater.yaml",
-        "test_consumer.yaml",
-        "unit_testing.md",
-        "test_scenarios.md",
+        "test-consumer": {"README.md", "requester.yaml"},
+        "persistent-consumers": {"README.md"},
+        "electric-boiler": {"README.md", "requester.yaml", "processor.yaml"},
+        "ev-charger": {"README.md", "requester.yaml", "processor.yaml"},
+        "reference": {"digital-report.yaml"},
     }
-    actual = {path.name for path in EXAMPLES.iterdir() if path.is_file()}
-    assert expected <= actual
+
+    assert {path.name for path in EXAMPLES.iterdir() if path.is_file()} == {
+        "README.md"
+    }
+    for folder_name, filenames in expected.items():
+        folder = EXAMPLES / folder_name
+        assert folder.is_dir()
+        assert filenames <= {path.name for path in folder.iterdir() if path.is_file()}
 
 
 def test_public_diagrams_exist() -> None:
     expected = {
-        "system-overview.png",
+        "architecture.svg",
         "available-power.svg",
-        "request-allocation-processor.png",
-        "allocation-cycle.png",
     }
     actual = {path.name for path in DIAGRAMS.iterdir() if path.is_file()}
     assert expected <= actual
+
+
+def test_obsolete_example_diagrams_are_removed() -> None:
+    assert not (EXAMPLES / "diagrams").exists()
+    obsolete = {
+        "system-overview.png",
+        "request-allocation-processor.png",
+        "allocation-cycle.png",
+        "available-power.png",
+    }
+    assert obsolete.isdisjoint(path.name for path in ROOT.rglob("*"))
+
+
+def test_examples_teach_matching_requester_and_processor_contracts() -> None:
+    boiler = EXAMPLES / "electric-boiler"
+    requester = (boiler / "requester.yaml").read_text(encoding="utf-8")
+    processor = (boiler / "processor.yaml").read_text(encoding="utf-8")
+    assert "minimum_power: 2000" in requester
+    assert "preferred_power: 2000" in requester
+    assert "maximum_power: 2000" in requester
+    assert "above: 1999" in processor
+
+    ev = EXAMPLES / "ev-charger"
+    ev_processor = (ev / "processor.yaml").read_text(encoding="utf-8")
+    assert 'seconds: "/15"' in ev_processor
+    assert "budget / voltage" in ev_processor
+    assert "switch.turn_off" in ev_processor
+
+
+def test_architecture_diagram_preserves_public_boundaries() -> None:
+    text = (DIAGRAMS / "architecture.svg").read_text(encoding="utf-8")
+    for concept in ("Requester", "Energy Dispenser", "Processor", "Physical device"):
+        assert concept in text
 
 
 def test_readme_describes_authoritative_available_power_and_reporting() -> None:

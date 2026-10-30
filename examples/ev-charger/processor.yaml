@@ -1,0 +1,46 @@
+# Example single-phase EV processor.
+# Non-zero commands are sampled every 15 seconds; a zero budget stops at once.
+
+- alias: Example - EV processor
+  id: example_ev_processor
+  mode: restart
+
+  triggers:
+    - trigger: time_pattern
+      seconds: "/15"
+      id: sample
+    - trigger: state
+      entity_id: sensor.budget_example_ev
+      id: budget_changed
+
+  variables:
+    budget: "{{ states('sensor.budget_example_ev') | float(0) }}"
+    voltage: "{{ [states('sensor.example_ev_charger_voltage') | float(230), 1] | max }}"
+    target_current: >-
+      {% if budget < 6 * voltage %}
+        0
+      {% else %}
+        {{ [[(budget / voltage) | int(0), 6] | max, 20] | min }}
+      {% endif %}
+    current_limit: "{{ states('number.example_ev_charger_current_limit') | float(0) }}"
+
+  actions:
+    - choose:
+        - conditions: "{{ target_current | int(0) == 0 }}"
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.example_ev_charger_enabled
+        - conditions: >-
+            {{ trigger.id == 'sample'
+               and ((target_current | int(0) - current_limit) | abs >= 1
+                    or not is_state('switch.example_ev_charger_enabled', 'on')) }}
+          sequence:
+            - action: number.set_value
+              target:
+                entity_id: number.example_ev_charger_current_limit
+              data:
+                value: "{{ target_current | int(0) }}"
+            - action: switch.turn_on
+              target:
+                entity_id: switch.example_ev_charger_enabled

@@ -235,66 +235,83 @@ Each registered consumer also gets an `Actual Power <consumer>` diagnostic senso
 
 The integration intentionally uses the standard Home Assistant config-flow UI. It does not require a custom frontend panel for consumer management.
 
-## Public examples
+## A practical path: boiler first, then EV
 
-The `examples/` directory contains intentionally simple, reusable examples rather than one specific home setup.
+Imagine that your home is exporting solar energy to the grid. You would rather
+use those watts locally, but the devices that can consume them behave very
+differently. Energy Dispenser gives those devices one common language: every
+consumer describes what it can use in watts, and receives an absolute watt
+budget in return.
 
-### Electric boiler
+### Step 1: start with an electric water boiler
 
-`examples/electric_boiler.md` demonstrates a classic 1000–2000 W electric boiler with a requester, a separate processor and `allow_import: false`.
+A basic heating element is an easy model to understand because it is normally
+either off or consuming its full rated power. A `2000 W` boiler can therefore
+request:
 
-### Dishwasher
+```text
+minimum = preferred = maximum = 2000 W
+```
 
-`examples/dishwasher.yaml` demonstrates a flexible household appliance that can wait for solar surplus.
+When the boiler needs heat and its complete minimum can be granted, its budget
+becomes `2000 W`. Otherwise it receives `0 W`. The requester only reports that
+demand; a separate processor reads the budget and safely controls the relay or
+contactor. See the complete
+[`electric-boiler`](examples/electric-boiler/) example.
 
-### Space heater
+### Step 2: add a flexible EV charger
 
-`examples/space_heater.yaml` demonstrates a comfort consumer with a preferred operating point.
+After the boiler starts, there may still be solar surplus available. An EV
+charger can usually consume that remainder more precisely because its current
+can be adjusted. A single-phase charger might request approximately:
 
-### Test consumer
+```text
+minimum   = 6 A × measured voltage
+preferred = 3000 W
+maximum   = 20 A × measured voltage
+```
 
-`examples/test_consumer.yaml` is a completely harmless digital consumer that controls no physical device. Use it to watch the allocator in real time.
+The allocator still works only in watts. The EV processor converts the granted
+budget to amps, applies whole-amp steps, and avoids sending a new physical
+command for every small sensor change. See the complete
+[`ev-charger`](examples/ev-charger/) example.
 
-### EV
+### Step 3: let both requests share the available energy
 
-The EV files are included as a more advanced example, with requester and processor separated.
+Suppose `4200 W` is available while the boiler and EV both want energy. The
+fixed boiler can receive its complete `2000 W`, while the flexible EV can use
+the remaining `2200 W`. If the available power changes, Energy Dispenser
+recalculates both absolute budgets while respecting their minimums, maximums,
+relative urgency, surplus value, and import permission.
+
+This is the central idea: add more consumers without adding product-specific
+branches to the allocator. Each requester describes demand, and each processor
+understands its own device. Discrete limits may occasionally leave a small
+remainder unused when no active consumer can meaningfully accept it.
+
+Before connecting hardware, use the harmless
+[`test-consumer`](examples/test-consumer/) example to observe allocation without
+controlling a device. The complete learning order, persistent-request examples,
+and compact report reference are collected in
+[`examples/README.md`](examples/README.md).
 
 ## Visual documentation
 
-The `examples/diagrams/` directory contains small illustrations intended to be embedded by the README rather than a single text-heavy poster.
+Architecture and power-model diagrams live with the technical documentation,
+not with the runnable examples.
 
-- `system-overview.png`
-- `available-power.svg` (authoritative power formula and protection model)
-- `request-allocation-processor.png`
-- `allocation-cycle.png`
+![Requester, allocator, and processor responsibilities](docs/diagrams/architecture.svg)
+
+![Available Power reconstruction and claim protection](docs/diagrams/available-power.svg)
+
+The exact formulas and timing semantics remain authoritative in
+[`docs/power-model.md`](docs/power-model.md).
 
 ## Unit tests
 
-The core allocator and power-budget calculation are deliberately kept independent from Home Assistant hardware.
-
-Install pytest:
-
-```bash
-python -m pip install pytest
-```
-
-Run all tests:
-
-```bash
-python -m pytest -q
-```
-
-The tests cover:
-
-- hard minimums
-- hard maximums
-- fair sharing
-- grid import rules
-- protection against allocation/source feedback loops
-- settling ceilings against double-counted asynchronous sensor updates
-- source changes between cycles
-- consumers becoming inactive
-- public example presence
+The allocator and power-budget calculation can be tested without physical
+hardware. Installation, test commands, and covered scenarios are documented in
+[`docs/testing.md`](docs/testing.md).
 
 ## 0.6.0
 

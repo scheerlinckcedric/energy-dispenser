@@ -1,15 +1,14 @@
-# Public example: a completely harmless test consumer.
-# Nothing physical is controlled. Use it to observe allocation in the UI.
+# Harmless learning example: this request controls no physical device.
 
 - alias: Example - Test consumer
   id: example_test_consumer
   mode: restart
 
-  trigger:
-    - platform: time_pattern
+  triggers:
+    - trigger: time_pattern
       seconds: "/10"
 
-  action:
+  actions:
     - action: energy_dispenser.report
       data:
         consumer_id: example_test_consumer

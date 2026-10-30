@@ -1,15 +1,13 @@
-# Public example: electric boiler requester
-# The boiler requests energy when its temperature/comfort logic says it needs heat.
-# This example deliberately does NOT control the relay. A separate processor does that.
+# Fixed 2000 W boiler requester. It reports demand but does not control a relay.
 
 - alias: Example - Electric boiler requester
   id: example_electric_boiler_requester
   mode: restart
 
-  trigger:
-    - platform: time_pattern
-      minutes: "/1"
-    - platform: state
+  triggers:
+    - trigger: time_pattern
+      seconds: "/10"
+    - trigger: state
       entity_id:
         - input_boolean.example_boiler_needs_heat
         - sensor.example_boiler_power
@@ -18,12 +16,12 @@
     needs_heat: "{{ is_state('input_boolean.example_boiler_needs_heat', 'on') }}"
     actual_power: "{{ states('sensor.example_boiler_power') | float(0) }}"
 
-  action:
+  actions:
     - action: energy_dispenser.report
       data:
         consumer_id: example_boiler
         state: "{{ 'active' if needs_heat else 'inactive' }}"
-        minimum_power: 1000
+        minimum_power: 2000
         preferred_power: 2000
         maximum_power: 2000
         urgency: 0.5
@@ -31,5 +29,5 @@
         actual_power: "{{ actual_power }}"
         settling_time: 10
         minimum_claim_time: 60
-        report_timeout: 90
+        report_timeout: 30
         allow_import: false

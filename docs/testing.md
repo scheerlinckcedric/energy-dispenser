@@ -2,7 +2,7 @@
 
 The allocator is deliberately kept independent from Home Assistant so the core rules can be tested without any hardware.
 
-From the integration directory:
+From the repository root:
 
 ```bash
 python -m pytest -q
@@ -25,6 +25,9 @@ The public tests cover:
 - multiple active allocations
 - negative source power
 - inactive consumers and public examples
+
+The public-example tests also guard the documented learning structure and make
+sure obsolete, misleading diagram files do not return.
 
 ### Feedback regression test
 
@@ -74,7 +77,7 @@ ceiling prevents a stale source plus fresh actual-power value from counting the
 same watts twice. The ceiling ends with settling; `minimum_claim_time` can keep
 only the floor active for longer.
 
-See `../docs/power-model.md` for the complete formula and timelines.
+See [`power-model.md`](power-model.md) for the complete formula and timelines.
 
 ### Digital reporting tests
 

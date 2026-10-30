@@ -1,0 +1,36 @@
+# Example single-phase EV requester. Values reported here are watts.
+# A separate processor translates the granted budget into charger commands.
+
+- alias: Example - EV requester
+  id: example_ev_requester
+  mode: restart
+
+  triggers:
+    - trigger: time_pattern
+      seconds: "/2"
+    - trigger: state
+      entity_id:
+        - input_boolean.example_ev_wants_charge
+        - sensor.example_ev_charger_power
+        - sensor.example_ev_charger_voltage
+
+  variables:
+    wants_charge: "{{ is_state('input_boolean.example_ev_wants_charge', 'on') }}"
+    voltage: "{{ [states('sensor.example_ev_charger_voltage') | float(230), 1] | max }}"
+    actual_power: "{{ states('sensor.example_ev_charger_power') | float(0) }}"
+
+  actions:
+    - action: energy_dispenser.report
+      data:
+        consumer_id: example_ev
+        state: "{{ 'active' if wants_charge else 'inactive' }}"
+        minimum_power: "{{ 6 * voltage }}"
+        preferred_power: 3000
+        maximum_power: "{{ 20 * voltage }}"
+        urgency: 0.3
+        surplus_value: 1.0
+        actual_power: "{{ actual_power }}"
+        settling_time: 20
+        minimum_claim_time: 30
+        report_timeout: 15
+        allow_import: false

@@ -4,6 +4,8 @@ This document is the authoritative description of the Energy Dispenser power
 model. It explains how source measurements, device feedback, claims, and the
 three timing settings interact.
 
+![Available Power reconstruction and temporary claim protection](diagrams/available-power.svg)
+
 ## Why feedback correction is necessary
 
 The configured Available Power entity normally measures net surplus after all

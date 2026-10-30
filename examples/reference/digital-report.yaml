@@ -1,14 +1,15 @@
-# Generic digital consumer report example
+# Compact action reference. Every power value is expressed in watts.
+# A real automation must repeat this report before report_timeout expires.
 - action: energy_dispenser.report
   data:
-    consumer_id: water
+    consumer_id: example_consumer
     state: active
     minimum_power: 1300
     preferred_power: 1300
     maximum_power: 1300
     urgency: 0.5
     surplus_value: 1.0
-    actual_power: "{{ states('sensor.warm_water_boiler_vermogen') | float(0) }}"
+    actual_power: "{{ states('sensor.example_consumer_power') | float(0) }}"
     settling_time: 10
     minimum_claim_time: 20
     report_timeout: 15
