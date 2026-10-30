@@ -46,7 +46,9 @@ into an on/off command for the example relay.
 Files:
 
 - [`electric-boiler/requester.yaml`](electric-boiler/requester.yaml): reports
-  demand and measured actual power;
+  a simple on/off demand and measured actual power;
+- [`electric-boiler/temperature-requester.yaml`](electric-boiler/temperature-requester.yaml):
+  makes urgency and import permission depend on water temperature;
 - [`electric-boiler/processor.yaml`](electric-boiler/processor.yaml): consumes
   the budget and controls the example relay;
 - [`electric-boiler/README.md`](electric-boiler/README.md): contract, flow, and

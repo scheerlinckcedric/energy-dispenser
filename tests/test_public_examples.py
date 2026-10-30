@@ -13,7 +13,12 @@ def test_public_examples_exist() -> None:
     expected = {
         "test-consumer": {"README.md", "requester.yaml"},
         "persistent-consumers": {"README.md"},
-        "electric-boiler": {"README.md", "requester.yaml", "processor.yaml"},
+        "electric-boiler": {
+            "README.md",
+            "requester.yaml",
+            "temperature-requester.yaml",
+            "processor.yaml",
+        },
         "ev-charger": {"README.md", "requester.yaml", "processor.yaml"},
         "reference": {"digital-report.yaml"},
     }
@@ -55,6 +60,15 @@ def test_examples_teach_matching_requester_and_processor_contracts() -> None:
     assert "preferred_power: 2000" in requester
     assert "maximum_power: 2000" in requester
     assert "above: 1999" in processor
+
+    temperature_requester = (boiler / "temperature-requester.yaml").read_text(
+        encoding="utf-8"
+    )
+    assert "temperature >= 65" in temperature_requester
+    assert "temperature >= 50" in temperature_requester
+    assert "temperature >= 38" in temperature_requester
+    assert "temperature < 38" in temperature_requester
+    assert "allow_import: \"{{ import_allowed }}\"" in temperature_requester
 
     ev = EXAMPLES / "ev-charger"
     ev_processor = (ev / "processor.yaml").read_text(encoding="utf-8")

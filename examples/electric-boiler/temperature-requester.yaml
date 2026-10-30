@@ -1,0 +1,50 @@
+# Temperature-aware fixed 2000 W boiler requester.
+# Use this instead of requester.yaml, not at the same time.
+# The actual-power entity and all values sent to report are expressed in watts.
+
+- alias: Example - Temperature-aware electric boiler requester
+  id: example_temperature_boiler_requester
+  mode: restart
+
+  triggers:
+    - trigger: time_pattern
+      seconds: "/10"
+    - trigger: state
+      entity_id:
+        - sensor.example_boiler_temperature
+        - sensor.example_boiler_power
+
+  variables:
+    temperature_state: "{{ states('sensor.example_boiler_temperature') }}"
+    temperature_known: >-
+      {{ temperature_state not in ['unknown', 'unavailable', 'none', ''] }}
+    temperature: "{{ temperature_state | float(0) }}"
+    actual_power: "{{ states('sensor.example_boiler_power') | float(0) }}"
+    request_active: "{{ temperature_known and temperature < 65 }}"
+    request_urgency: >-
+      {% if not temperature_known or temperature >= 65 %}
+        0.0
+      {% elif temperature >= 50 %}
+        0.2
+      {% elif temperature >= 38 %}
+        0.6
+      {% else %}
+        1.0
+      {% endif %}
+    import_allowed: "{{ temperature_known and temperature < 38 }}"
+
+  actions:
+    - action: energy_dispenser.report
+      data:
+        consumer_id: example_boiler
+        state: "{{ 'active' if request_active else 'inactive' }}"
+        minimum_power: 2000
+        preferred_power: 2000
+        maximum_power: 2000
+        urgency: "{{ request_urgency }}"
+        surplus_value: 0.8
+        actual_power: "{{ actual_power }}"
+        settling_time: 10
+        minimum_claim_time: 60
+        report_timeout: 30
+        allow_import: "{{ import_allowed }}"
