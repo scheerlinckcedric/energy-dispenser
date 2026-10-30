@@ -1,4 +1,4 @@
-# Energy Dispenser v0.6.0
+# Energy Dispenser v0.6.1
 
 Central, consumer-driven energy allocation for Home Assistant.
 
@@ -312,6 +312,21 @@ The exact formulas and timing semantics remain authoritative in
 The allocator and power-budget calculation can be tested without physical
 hardware. Installation, test commands, and covered scenarios are documented in
 [`docs/testing.md`](docs/testing.md).
+
+## 0.6.1
+
+Home Assistant 2026.1 compatibility and public-example update.
+
+- The options flow now follows the Home Assistant 2026.1 lifecycle: Home
+  Assistant injects the read-only config entry after constructing the flow.
+- Available Power and actual-power selectors accept either power sensors or
+  `input_number` helpers without accidentally filtering helpers out.
+- Focused regression tests cover the options-flow lifecycle and selector
+  filters.
+- Public examples are organised as a progressive learning path from a harmless
+  test consumer to fixed boiler and flexible EV control.
+- Obsolete and misleading diagrams were replaced with authoritative
+  architecture and Available Power diagrams.
 
 ## 0.6.0
 

@@ -15,6 +15,18 @@ from .validation import RequestValidationError, validate_request_contract
 CONSUMERS_KEY = "consumers"
 
 
+def _power_entity_selector() -> selector.EntitySelector:
+    """Select either a power sensor or an input-number helper."""
+    return selector.EntitySelector(
+        selector.EntitySelectorConfig(
+            filter=[
+                {"domain": "sensor", "device_class": "power"},
+                {"domain": "input_number"},
+            ]
+        )
+    )
+
+
 def _manual_contract(user_input: dict[str, Any]) -> dict[str, float]:
     """Convert UI percentages and validate a persistent request."""
     contract = {
@@ -111,27 +123,29 @@ class EnergyDispenserConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = vol.Schema(
             {
                 vol.Required(CONF_NAME, default="Energy Dispenser"): str,
-                vol.Required(CONF_AVAILABLE_POWER_ENTITY): selector.EntitySelector(
-                    selector.EntitySelectorConfig(
-                        domain=["sensor", "input_number"],
-                        device_class="power",
-                    )
-                ),
+                vol.Required(CONF_AVAILABLE_POWER_ENTITY): _power_entity_selector(),
             }
         )
 
         return self.async_show_form(step_id="user", data_schema=schema)
 
     @staticmethod
-    def async_get_options_flow(config_entry):
-        return EnergyDispenserOptionsFlow(config_entry)
+    def async_get_options_flow(
+        _config_entry: config_entries.ConfigEntry,
+    ) -> EnergyDispenserOptionsFlow:
+        """Create an options flow; Home Assistant injects its entry afterwards."""
+        return EnergyDispenserOptionsFlow()
 
 
 class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
     """Manage persistent consumers and the selected Available Power source."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self.config_entry = config_entry
+    def _ensure_initialized(self) -> None:
+        """Load mutable flow state after Home Assistant attaches the entry."""
+        if hasattr(self, "_consumers"):
+            return
+
+        config_entry = self.config_entry
         self._consumers: list[dict[str, Any]] = [
             {
                 key: value
@@ -166,6 +180,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
         }
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None):
+        self._ensure_initialized()
         return self.async_show_menu(
             step_id="init",
             menu_options=[
@@ -179,6 +194,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
         )
 
     async def async_step_available_power(self, user_input: dict[str, Any] | None = None):
+        self._ensure_initialized()
         if user_input is not None:
             self._available_power_entity = user_input[CONF_AVAILABLE_POWER_ENTITY]
             self._pending_available_power_entity = self._available_power_entity
@@ -189,12 +205,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
                 vol.Required(
                     CONF_AVAILABLE_POWER_ENTITY,
                     default=self._available_power_entity,
-                ): selector.EntitySelector(
-                    selector.EntitySelectorConfig(
-                        domain=["sensor", "input_number"],
-                        device_class="power",
-                    )
-                )
+                ): _power_entity_selector()
             }
         )
         state = self.hass.states.get(self._available_power_entity) if self._available_power_entity else None
@@ -216,6 +227,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
     async def async_step_add_consumer(
         self, user_input: dict[str, Any] | None = None
     ):
+        self._ensure_initialized()
         if user_input is not None:
             consumer_id = _slug(user_input["consumer_id"])
 
@@ -276,6 +288,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
     async def async_step_edit_consumer(
         self, user_input: dict[str, Any] | None = None
     ):
+        self._ensure_initialized()
         if not self._consumers:
             return await self.async_step_init()
 
@@ -366,6 +379,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
     async def async_step_remove_consumer(
         self, user_input: dict[str, Any] | None = None
     ):
+        self._ensure_initialized()
         if not self._consumers:
             return await self.async_step_init()
 
@@ -403,6 +417,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
         )
 
     async def async_step_done(self, user_input=None):
+        self._ensure_initialized()
         return self.async_create_entry(
             title="",
             data={
@@ -459,12 +474,7 @@ class EnergyDispenserOptionsFlow(config_entries.OptionsFlow):
                 vol.Optional(
                     "actual_power_entity",
                     default=defaults.get("actual_power_entity", ""),
-                ): selector.EntitySelector(
-                    selector.EntitySelectorConfig(
-                        domain=["sensor", "input_number"],
-                        device_class="power",
-                    )
-                ),
+                ): _power_entity_selector(),
                 vol.Required(
                     "enabled",
                     default=defaults.get("enabled", True),
