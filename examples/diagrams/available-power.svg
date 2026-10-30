@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620" role="img" aria-labelledby="title description">
+  <title id="title">Energy Dispenser Available Power model</title>
+  <desc id="description">Raw source plus measured controlled power creates a candidate pool. A protected claim floor and temporary settling ceiling produce effective Available Power.</desc>
+  <rect width="1000" height="620" fill="#f7f9fc"/>
+  <text x="50" y="60" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#182230">Available Power model</text>
+  <text x="50" y="96" font-family="Arial, sans-serif" font-size="18" fill="#536273">Use measurements for reconstruction; use claims only for temporary protection.</text>
+
+  <rect x="50" y="145" width="250" height="125" rx="16" fill="#e8f1ff" stroke="#4c8bd9" stroke-width="2"/>
+  <text x="175" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#182230">Raw source</text>
+  <text x="175" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">P1 / net surplus</text>
+  <text x="175" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#182230">900 W</text>
+
+  <text x="330" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#536273">+</text>
+
+  <rect x="360" y="145" width="280" height="125" rx="16" fill="#fff2dc" stroke="#de9833" stroke-width="2"/>
+  <text x="500" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#182230">Controlled actual power</text>
+  <text x="500" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">measured, current claims only</text>
+  <text x="500" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#182230">1220 W</text>
+
+  <text x="675" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#536273">=</text>
+
+  <rect x="710" y="145" width="240" height="125" rx="16" fill="#e7f7ed" stroke="#3f9b61" stroke-width="2"/>
+  <text x="830" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#182230">Candidate pool</text>
+  <text x="830" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">before protection</text>
+  <text x="830" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#182230">2120 W</text>
+
+  <path d="M830 280 L830 330" stroke="#536273" stroke-width="3" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#536273"/>
+    </marker>
+  </defs>
+
+  <rect x="180" y="340" width="640" height="105" rx="16" fill="#ffffff" stroke="#75869a" stroke-width="2"/>
+  <text x="500" y="378" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#182230">Temporary claim protection</text>
+  <text x="500" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#536273">floor: protected claims  ·  ceiling: pool when claim started</text>
+  <text x="500" y="436" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#536273">ceiling ends after settling_time; floor may continue for minimum_claim_time</text>
+
+  <path d="M500 455 L500 500" stroke="#536273" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="320" y="510" width="360" height="75" rx="16" fill="#dff4e7" stroke="#2d8a50" stroke-width="3"/>
+  <text x="500" y="542" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#182230">Effective Available Power</text>
+  <text x="500" y="571" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#536273">the pool divided between active requests</text>
+</svg>

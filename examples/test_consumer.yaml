@@ -1,0 +1,26 @@
+# Public example: a completely harmless test consumer.
+# Nothing physical is controlled. Use it to observe allocation in the UI.
+
+- alias: Example - Test consumer
+  id: example_test_consumer
+  mode: restart
+
+  trigger:
+    - platform: time_pattern
+      seconds: "/10"
+
+  action:
+    - action: energy_dispenser.report
+      data:
+        consumer_id: example_test_consumer
+        state: active
+        minimum_power: 100
+        preferred_power: 500
+        maximum_power: 1000
+        urgency: 0.2
+        surplus_value: 1.0
+        actual_power: 0
+        settling_time: 0
+        minimum_claim_time: 0
+        report_timeout: 20
+        allow_import: false

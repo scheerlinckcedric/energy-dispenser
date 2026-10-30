@@ -1,0 +1,91 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Energy Dispenser",
+        "description": "Choose the sensor the Energy Dispenser uses as its Available Power source.",
+        "data": {
+          "name": "Name",
+          "available_power_entity": "Available power sensor"
+        },
+        "data_description": {
+          "available_power_entity": "Net power available to the dispenser."
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Energy Dispenser",
+        "menu_options": {
+          "add_consumer": "Add consumer",
+          "remove_consumer": "Remove consumer",
+          "done": "Done",
+          "edit_consumer": "Edit consumer",
+          "available_power": "Change Available Power source"
+        },
+        "description": "Current source: {available_power_entity}.\n\n{consumer_table}\n\nManually configured consumers can be edited or removed. Digital consumers are read-only and are managed through reports."
+      },
+      "add_consumer": {
+        "title": "Add consumer",
+        "data": {
+          "consumer_id": "Consumer ID",
+          "name": "Name",
+          "enabled": "Enabled",
+          "minimum_power": "Minimum power (W)",
+          "preferred_power": "Preferred power (W)",
+          "maximum_power": "Maximum power (W)",
+          "urgency": "Urgency (%)",
+          "surplus_value": "Surplus value (%)",
+          "allow_import": "Allow grid import",
+          "actual_power_entity": "Actual power entity (optional)"
+        }
+      },
+      "remove_consumer": {
+        "title": "Remove consumer",
+        "data": {
+          "consumer_id": "Consumer ID"
+        }
+      },
+      "edit_consumer": {
+        "title": "Edit consumer",
+        "data": {
+          "consumer_id": "Consumer ID"
+        }
+      },
+      "edit_consumer_values": {
+        "title": "Edit consumer",
+        "data": {
+          "name": "Name",
+          "enabled": "Enabled",
+          "minimum_power": "Minimum power (W)",
+          "preferred_power": "Preferred power (W)",
+          "maximum_power": "Maximum power (W)",
+          "urgency": "Urgency (%)",
+          "surplus_value": "Surplus value (%)",
+          "allow_import": "Allow grid import",
+          "actual_power_entity": "Actual power entity (optional)"
+        }
+      },
+      "available_power": {
+        "title": "Change Available Power source",
+        "description": "Current source: {available_power_entity}. Choose another source below if needed.",
+        "data": {
+          "available_power_entity": "Available Power entity"
+        }
+      }
+    },
+    "error": {
+      "invalid_consumer_id": "Enter a valid consumer ID.",
+      "consumer_exists": "That consumer ID already exists.",
+      "invalid_number": "Enter valid numeric values.",
+      "non_finite_value": "Values must be finite numbers.",
+      "negative_power": "Power values cannot be negative.",
+      "invalid_power_order": "Power must follow: minimum ≤ preferred ≤ maximum.",
+      "normalized_value_out_of_range": "Urgency and surplus value must be between 0 and 100%.",
+      "negative_timing": "Timing values cannot be negative.",
+      "invalid_report_timeout": "Report timeout must be at least 1 second."
+    }
+  }
+}

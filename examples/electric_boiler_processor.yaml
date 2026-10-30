@@ -1,0 +1,28 @@
+# Public example: electric boiler processor
+# This processor is intentionally simple. Real installations normally add
+# temperature hysteresis, minimum run time and safety checks.
+
+- alias: Example - Electric boiler processor
+  id: example_electric_boiler_processor
+  mode: restart
+
+  trigger:
+    - platform: state
+      entity_id:
+        - sensor.budget_example_boiler
+        - switch.example_boiler_relay
+
+  action:
+    - choose:
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.budget_example_boiler
+              above: 999
+          sequence:
+            - action: switch.turn_on
+              target:
+                entity_id: switch.example_boiler_relay
+      default:
+        - action: switch.turn_off
+          target:
+            entity_id: switch.example_boiler_relay

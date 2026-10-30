@@ -1,0 +1,38 @@
+# Example: type-less EV requester
+# Physical charger control is intentionally not included here.
+# The requester only reports the energy need and actual power.
+
+- alias: EV - Requester
+  id: ev_requester
+  mode: restart
+
+  trigger:
+    - platform: time_pattern
+      seconds: "/2"
+    - platform: state
+      entity_id:
+        - input_select.ev_laadmodus
+        - sensor.charger_power_active_import
+        - sensor.charger_voltage
+
+  variables:
+    mode: "{{ states('input_select.ev_laadmodus') }}"
+    voltage: "{{ [states('sensor.charger_voltage') | float(230), 1] | max }}"
+    actual_power: >
+      {{ states('sensor.charger_power_active_import') | float(0) * 1000 }}
+
+  action:
+    - action: energy_dispenser.report
+      data:
+        consumer_id: ev_auto
+        state: "{{ 'inactive' if mode == 'Niet laden' else 'active' }}"
+        minimum_power: "{{ 6 * voltage }}"
+        preferred_power: 3000
+        maximum_power: 4600
+        urgency: 0
+        surplus_value: 1
+        actual_power: "{{ actual_power }}"
+        settling_time: 20
+        minimum_claim_time: 20
+        report_timeout: 15
+        allow_import: "{{ mode in ['Manual', 'Laden met budget, minimum 6A'] }}"

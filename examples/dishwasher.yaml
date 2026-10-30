@@ -1,0 +1,16 @@
+# Public example: dishwasher
+# A dishwasher is a classic flexible consumer: it can run when surplus exists,
+# but it does not need to be kept at a fixed power level.
+
+# Configure a consumer with the Energy Dispenser UI using:
+#   consumer_id: example_dishwasher
+#   name: Dishwasher
+#   minimum power: 300 W
+#   preferred power: 1200 W
+#   maximum power: 1800 W
+#   urgency: 20 %
+#   surplus value: 90 %
+#   allow_import: false
+#
+# The physical dishwasher control remains separate. For example, a processor
+# can turn on the relay only when sensor.budget_example_dishwasher is positive.

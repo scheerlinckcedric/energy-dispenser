@@ -1,0 +1,91 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Energy Dispenser",
+        "description": "Kies de sensor die de Energy Dispenser als Available Power bron gebruikt.",
+        "data": {
+          "name": "Naam",
+          "available_power_entity": "Sensor beschikbaar vermogen"
+        },
+        "data_description": {
+          "available_power_entity": "Netto vermogen dat beschikbaar is voor de Energy Dispenser."
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Energy Dispenser",
+        "menu_options": {
+          "add_consumer": "Verbruiker toevoegen",
+          "remove_consumer": "Verbruiker verwijderen",
+          "done": "Klaar",
+          "edit_consumer": "Verbruiker bewerken",
+          "available_power": "Available Power bron wijzigen"
+        },
+        "description": "Huidige bron: {available_power_entity}.\n\n{consumer_table}\n\nManuele verbruikers kun je bewerken of verwijderen. Digitale verbruikers zijn alleen-lezen en worden automatisch via reports beheerd."
+      },
+      "add_consumer": {
+        "title": "Verbruiker toevoegen",
+        "data": {
+          "consumer_id": "Verbruiker-ID",
+          "name": "Naam",
+          "enabled": "Actief",
+          "minimum_power": "Minimum vermogen (W)",
+          "preferred_power": "Gewenst vermogen (W)",
+          "maximum_power": "Maximum vermogen (W)",
+          "urgency": "Urgentie (%)",
+          "surplus_value": "Waarde van overschot (%)",
+          "allow_import": "Aankopen van netstroom toestaan",
+          "actual_power_entity": "Werkelijk vermogen entity (optioneel)"
+        }
+      },
+      "remove_consumer": {
+        "title": "Verbruiker verwijderen",
+        "data": {
+          "consumer_id": "Verbruiker-ID"
+        }
+      },
+      "edit_consumer": {
+        "title": "Verbruiker bewerken",
+        "data": {
+          "consumer_id": "Verbruiker-ID"
+        }
+      },
+      "edit_consumer_values": {
+        "title": "Verbruiker bewerken",
+        "data": {
+          "name": "Naam",
+          "enabled": "Actief",
+          "minimum_power": "Minimum vermogen (W)",
+          "preferred_power": "Gewenst vermogen (W)",
+          "maximum_power": "Maximum vermogen (W)",
+          "urgency": "Urgentie (%)",
+          "surplus_value": "Waarde van overschot (%)",
+          "allow_import": "Aankopen van netstroom toestaan",
+          "actual_power_entity": "Werkelijk vermogen entity (optioneel)"
+        }
+      },
+      "available_power": {
+        "title": "Available Power bron wijzigen",
+        "description": "Huidige bron: {available_power_entity}. Kies hieronder een andere bron indien gewenst.",
+        "data": {
+          "available_power_entity": "Available Power entity"
+        }
+      }
+    },
+    "error": {
+      "invalid_consumer_id": "Geef een geldige consumer-ID op.",
+      "consumer_exists": "Deze consumer-ID bestaat al.",
+      "invalid_number": "Vul geldige getallen in.",
+      "non_finite_value": "Waarden moeten eindige getallen zijn.",
+      "negative_power": "Vermogens mogen niet negatief zijn.",
+      "invalid_power_order": "Het vermogen moet voldoen aan: minimum ≤ gewenst ≤ maximum.",
+      "normalized_value_out_of_range": "Urgentie en waarde van overschot moeten tussen 0 en 100% liggen.",
+      "negative_timing": "Tijdswaarden mogen niet negatief zijn.",
+      "invalid_report_timeout": "De report-time-out moet minstens 1 seconde zijn."
+    }
+  }
+}
